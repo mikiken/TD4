@@ -6,7 +6,7 @@ module rom(
 	function [7:0] select;
 		input [3:0]	address;
 		case (address)
-			/*
+
 			//Ramen timer!
 			4'b0000: select = 8'b10110111; // OUT 0111
 			4'b0001: select = 8'b00000001; // ADD A,0001
@@ -25,8 +25,8 @@ module rom(
 			4'b1110: select = 8'b10111000; // OUT 1000
 			4'b1111: select = 8'b11111111; // JMP 1111
 			default: select = 8'bxxxxxxxx;
-			*/
 			
+			/*
 			//LED chikachika!
 			4'b0000: select = 8'b10110011; // OUT 0011
 			4'b0001: select = 8'b10110110; // OUT 0110
@@ -45,7 +45,7 @@ module rom(
 			4'b1110: select = 8'b00000000;
 			4'b1111: select = 8'b00000000;
 			default: select = 8'bxxxxxxxx;
-			
+			*/
 		endcase
 	endfunction
 	
