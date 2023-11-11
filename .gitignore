@@ -1,4 +1,3 @@
-*.*
 !/*.gitignore
 
 # ignore Quartus generated folders
@@ -30,3 +29,8 @@
 !*.sdc
 # tcl files:
 !*.tcl
+
+# for writing report
+.vscode
+*.satysfi-aux
+*.pdf
