@@ -1,0 +1,13 @@
+@require: stdjareport
+
+% 可能なら独立した表紙をつける
+document(|
+    title = { 電気電子工学実験Ⅲ テーマS(a)　簡単な4bit CPUの製作 };
+    author = { 三木 健太郎 };
+    show-title = true;
+    show-toc = true;
+|)'<
+    +chapter { 概要 } <
+        +p {}
+    >
+>
