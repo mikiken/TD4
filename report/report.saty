@@ -8,6 +8,20 @@ document(|
     show-toc = true;
 |)'<
     +chapter { 概要 } <
-        +p {}
+        +section { 製作物の概要 } <
+            +p {}
+        >
+        +section { 書籍「CPUの創りかた」について } <
+            +p {}
+        >
+        +section { 製作の動機 } <
+            +p {}
+        >
+        +section { 製作方法 } <
+            +p {}
+        >
     >
+    +chapter { 回路の説明 } <>
+    +chapter { 考察 } <>
+    +chapter { 感想 } <>
 >
