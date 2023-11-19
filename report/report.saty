@@ -1,8 +1,10 @@
 @require: stdjareport
 @require: itemize
 @require: figbox/figbox
+@require: easytable/easytable
 
 open FigBox
+open EasyTableAlias
 in
 
 % 以下の内容を記載
@@ -60,21 +62,22 @@ document(|
                 \footnote { 表現できるアドレスも4bitの範囲となるため、実行できるプログラムは最大で16ステップのものまでとなる。 }
                 演算用のレジスタはAレジスタとBレジスタの2つあり、いずれも4bitの値を記憶することができる。
             }
-            % オペコードを追記した方がいいかも
             +p { TD4において実行できる命令の一覧を以下に示す。 }
-            +listing {
-                * `ADD A, Im` (即値の加算命令)
-                * `ADD B, Im`
-                * `MOV A, Im` (即値の代入命令)
-                * `MOV B, Im`
-                * `MOV A, B` (レジスタ間のデータ転送命令)
-                * `MOV B, A`
-                * `JMP Im` (ジャンプ命令)
-                * `JNC Im` (条件ジャンプ命令)
-                * `IN A` (入力端子からのデータ入力命令)
-                * `IN B`
-                * `OUT B` \footnote { なお、`OUT A`命令は存在しない。 } (出力端子へのデータ出力命令)
-                * `OUT Im` (即値の出力命令)
+            +easytable [c;c;c;] {
+                | 命令 | オペコード | 概要
+                | `ADD A, Im` | 0000 | Aレジスタに即値Imを加算する
+                | `ADD B, Im` | 0101 | Bレジスタに即値Imを加算する
+                | `MOV A, Im` | 0011 | Aレジスタに即値Imを代入する
+                | `MOV B, Im` | 0111 | Bレジスタに即値Imを代入する
+                | `MOV A, B` | 0001 | Bレジスタの値をAレジスタに代入する
+                | `MOV B, A` | 0100 | Aレジスタの値をBレジスタに代入する
+                | `JMP Im` | 1111 | 即値Imで指定されたアドレスにジャンプする
+                | `JNC Im` | 1110 | キャリーフラグが0のとき、即値Imで指定されたアドレスにジャンプする
+                | `IN A` | 0010 | 入力端子からデータを入力し、Aレジスタに代入する
+                | `IN B` | 0110 | 入力端子からデータを入力し、Bレジスタに代入する
+                | `OUT B` \footnote { なお、`OUT A`命令は存在しない。 } | 1001 | Bレジスタの値を出力端子に出力する
+                | `OUT Im` | 1011 | 即値Imを出力端子に出力する
+                |
             }
             +p {
                 `ADD A, Im`, `ADD B, Im`は、レジスタに対して、即値`Im`を加算する命令である。
