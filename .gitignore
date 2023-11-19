@@ -34,3 +34,12 @@
 .vscode
 *.satysfi-aux
 *.pdf
+*.aux
+*.dvi
+*.fdb_latexmk
+*.fls
+*.log
+*.pdf
+*.synctex
+*.synctex.gz
+*.synctex(busy)
