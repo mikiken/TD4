@@ -1,5 +1,9 @@
 @require: stdjareport
 @require: itemize
+@require: figbox/figbox
+
+open FigBox
+in
 
 % 以下の内容を記載
 % 1. 表紙(名前と学籍番号含む)
@@ -59,18 +63,18 @@ document(|
             % オペコードを追記した方がいいかも
             +p { TD4において実行できる命令の一覧を以下に示す。 }
             +listing {
-                * `ADD A, Im`
+                * `ADD A, Im` (即値の加算命令)
                 * `ADD B, Im`
-                * `MOV A, Im`
+                * `MOV A, Im` (即値の代入命令)
                 * `MOV B, Im`
-                * `MOV A, B`
+                * `MOV A, B` (レジスタ間のデータ転送命令)
                 * `MOV B, A`
-                * `JMP Im`
-                * `JNC Im`
-                * `IN A`
+                * `JMP Im` (ジャンプ命令)
+                * `JNC Im` (条件ジャンプ命令)
+                * `IN A` (入力端子からのデータ入力命令)
                 * `IN B`
-                * `OUT B` \footnote { なお、`OUT A`命令は存在しない。 }
-                * `OUT Im`
+                * `OUT B` \footnote { なお、`OUT A`命令は存在しない。 } (出力端子へのデータ出力命令)
+                * `OUT Im` (即値の出力命令)
             }
             +p {
                 `ADD A, Im`, `ADD B, Im`は、レジスタに対して、即値`Im`を加算する命令である。
