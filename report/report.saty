@@ -5,6 +5,12 @@
 
 open FigBox
 open EasyTableAlias
+let with-caption caption figbox =
+    vconcat ?:align-center [
+        figbox;
+        gap 10pt;
+        textbox caption;
+    ]
 in
 
 % 以下の内容を記載
@@ -89,6 +95,11 @@ document(|
                 `OUT B`はレジスタBの値を出力端子に出力する命令である。
                 `OUT Im`は、即値`Im`を出力端子に出力する命令である。
             }
+        >
+        +section { 回路の全体像 } <
+            +p { 今回製作した回路の全体像を、以下の図1に示す。 }
+            +fig-center (include-image 16cm `img/circuit_diagram.jpg`
+                |> with-caption { 回路の全体像 });
         >
     >
     +chapter { 考察 } <>
