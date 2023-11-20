@@ -12,6 +12,24 @@
 % - 学籍番号の挿入
 % - 回路図pdfの結合
 
+\lstset{
+    basicstyle=\ttfamily, % 等幅フォントを指定
+    columns=fullflexible, % 文字の間隔を狭める
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!40!black},
+    stringstyle=\color{orange},
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1,
+    numbersep=5pt,
+    frame=single,
+    rulecolor=\color{black},
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=false,
+    tabsize=4
+}
+
 \title{電気電子工学実験3 テーマS(a)\\ 簡単な4bit CPUの製作}
 \author{三木 健太郎}
 \date{2023年11月20日}
@@ -145,5 +163,63 @@ endmodule
 \end{lstlisting}
 
 図\thefigure のように、入力として4bitのアドレスを受け取り、そのアドレスに記録されている命令を出力するような素子を作成した。Quartus Primeの、Verilogコードを回路上のシンボルに変換する機能を利用し、このVerologコードを回路内に組み込んだ。\\
+
+\subsection{サンプルプログラム}
+サンプルプログラムとして、書籍でも紹介されている「LEDを決まったパターンで点滅させるプログラム」と「タイマープログラム」を作成した。
+
+\subsubsection{LEDを決まったパターンで点滅させるプログラム}
+今回製作したTD4で実行できるプログラムとして、まず簡単な「LEDを決まったパターンで点滅させるプログラム」を作成した。実際のプログラムを以下に示す。\\
+
+\stepcounter{figure}
+\begin{lstlisting}[language=Verilog, label={led_chikachika}, title={図\thefigure　LEDを決まったパターンで点滅させるプログラム}]
+//LED chikachika!
+4'b0000: select = 8'b10110011; // OUT 0011
+4'b0001: select = 8'b10110110; // OUT 0110
+4'b0010: select = 8'b10111100; // OUT 1100
+4'b0011: select = 8'b10111000; // OUT 1000
+4'b0100: select = 8'b10111000; // OUT 1000
+4'b0101: select = 8'b10111100; // OUT 1100
+4'b0110: select = 8'b10110110; // OUT 0110
+4'b0111: select = 8'b10110011; // OUT 0011
+4'b1000: select = 8'b10110001; // OUT 0001
+4'b1001: select = 8'b11110000; // JMP 0000
+4'b1010: select = 8'b00000000;
+4'b1011: select = 8'b00000000;
+4'b1100: select = 8'b00000000;
+4'b1101: select = 8'b00000000;
+4'b1110: select = 8'b00000000;
+4'b1111: select = 8'b00000000;
+default: select = 8'bxxxxxxxx;
+\end{lstlisting}
+
+今回製作したTD4は、出力端子として4つのLEDを備えており、OUT命令で1を指定したbitに対応するLEDが点灯する。このプログラムを実行した場合、隣り合う2つのLEDが左右に繰り返し往復するように点滅する。\\
+
+\subsubsection{タイマープログラム}
+次に、もう少し応用的なプログラムとして、「タイマープログラム」を作成した。実際のプログラムを以下に示す。\\
+
+\stepcounter{figure}
+\begin{lstlisting}[language=Verilog, label={ramen_timer}, title={図\thefigure　タイマープログラム}]
+//Ramen timer!
+4'b0000: select = 8'b10110111; // OUT 0111
+4'b0001: select = 8'b00000001; // ADD A,0001
+4'b0010: select = 8'b11100001; // JNC 0001
+4'b0011: select = 8'b00000001; // ADD A,0001
+4'b0100: select = 8'b11100011; // JNC 0011
+4'b0101: select = 8'b10110110; // OUT 0110
+4'b0110: select = 8'b00000001; // ADD A,0001
+4'b0111: select = 8'b11100110; // JNC 0110
+4'b1000: select = 8'b00000001; // ADD A,0001
+4'b1001: select = 8'b11101000; // JNC 1000
+4'b1010: select = 8'b10110000; // OUT 0000
+4'b1011: select = 8'b10110100; // OUT 0100
+4'b1100: select = 8'b00000001; // ADD 0001
+4'b1101: select = 8'b11101010; // JNC 1010
+4'b1110: select = 8'b10111000; // OUT 1000
+4'b1111: select = 8'b11111111; // JMP 1111
+default: select = 8'bxxxxxxxx;
+\end{lstlisting}
+
+このプログラムを実行すると、まず評価ボード上のLEDが3つ点灯する。クロックを16回刻むたびに、LEDが1つずつ消灯していく。最後のLEDが消灯すると、タイマーのカウントが終了し、カウント終了を示すLEDが点灯する。\footnote{なお、出力端子にブザーを接続しておくことで、タイマーのカウント終了を音で知らせることも可能である。}\\
+プログラムを確認すると、LEDが3つ点灯する部分が、図\ref{ramen_timer}の1行目の命令に対応している。その次の行でAレジスタに1を加算している。このプログラムにおけるポイントは、この次の行の\verb|JNC 0001|である。\verb|JNC|命令は直前の加算命令において、繰り上がりが発生した場合は、単に次の命令を実行し、発生しなかった場合は、オペランドで指定されたアドレスにジャンプする命令である。Aレジスタの初期値は0であるため、Aレジスタの値が\verb|10000|(=16)となる(繰り上がりが発生する)までは、1行前の\verb|ADD A,0001|にジャンプし、Aレジスタの値が増え続ける。Aレジスタの値が\verb|10000|となり、繰り上がりが発生すると、1行前の\verb|ADD A,0001|に戻ることなく、次の行の命令が実行される。このように、\verb|JNC|命令と\verb|ADD|命令を上手く組み合わせることで、上記のような動作を実現している。\\
 
 \end{document}
