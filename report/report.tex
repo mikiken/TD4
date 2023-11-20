@@ -107,5 +107,43 @@ TD4において実行できる命令の一覧を、 以下の表\ref{instruction
 CPUはリセットがかかると、ROMの\verb|0000|番地の命令から実行を開始していく。ROMに記録されている機械語命令のうち、上位4bitはオペコード(命令の種類)を表しており、下位4bitはオペランド(演算に用いる値やアドレス)を表している。オペコードは命令デコーダに読み込まれ、オペランドはALUに送られる。次に、読み込んだオペコ―ドやオペランドを元に命令を実行する。例えば、ALUで加算を行ったり、レジスタに値をロードしたりする。演算結果はレジスタに格納され、次以降の命令に利用する。最後にプログラムカウンタの値を1増加させ、次に\verb|0001|番地の命令を同様に実行する。こうした動作をクロックに合わせて繰り返し行うことで、CPUは動作する。
 
 \subsection{ROMの実装方法}\label{implemtnt_rom}
+書籍「CPUの創りかた」では、8bitのDIPスイッチを16個用意し、スイッチのOFF/ONを\verb|0/1|に対応させることで、ROMを表現していた。しかし、今回実装に使用したFPGAボードであるMU500-RXSET01
+には、8bitのDIPスイッチ2個しか搭載されていなかったため、書籍の通りにROMを実装することはできなかった。\\
+そこで、Verilog HDLを用いて、以下のような素子を作成することで、ROMを表現した。\\
+
+\stepcounter{figure}
+\begin{lstlisting}[language=Verilog, label={rom_code}, title={図\thefigure　ROMを表すVerilogコード}]
+module rom(
+    input  [3:0] address,
+    output [7:0] data
+);
+    function [7:0] select;
+        input [3:0]	address;
+        case (address)
+            //Ramen timer!
+            4'b0000: select = 8'b10110111; // OUT 0111
+            4'b0001: select = 8'b00000001; // ADD A,0001
+            4'b0010: select = 8'b11100001; // JNC 0001
+            4'b0011: select = 8'b00000001; // ADD A,0001
+            4'b0100: select = 8'b11100011; // JNC 0011
+            4'b0101: select = 8'b10110110; // OUT 0110
+            4'b0110: select = 8'b00000001; // ADD A,0001
+            4'b0111: select = 8'b11100110; // JNC 0110
+            4'b1000: select = 8'b00000001; // ADD A,0001
+            4'b1001: select = 8'b11101000; // JNC 1000
+            4'b1010: select = 8'b10110000; // OUT 0000
+            4'b1011: select = 8'b10110100; // OUT 0100
+            4'b1100: select = 8'b00000001; // ADD 0001
+            4'b1101: select = 8'b11101010; // JNC 1010
+            4'b1110: select = 8'b10111000; // OUT 1000
+            4'b1111: select = 8'b11111111; // JMP 1111
+            default: select = 8'bxxxxxxxx;
+        endcase
+    endfunction
+    assign data = select(address);
+endmodule
+\end{lstlisting}
+
+図\thefigure のように、入力として4bitのアドレスを受け取り、そのアドレスに記録されている命令を出力するような素子を作成した。Quartus Primeの、Verilogコードを回路上のシンボルに変換する機能を利用し、このVerologコードを回路内に組み込んだ。\\
 
 \end{document}
